@@ -1,5 +1,5 @@
 ## 简介
-swrpc是一个基于swoole开发的高性能rpc包，swrpc提供了注册发现，链路追踪，中间件等等功能，可以很容易集成到第三方框架，如laravel，yii等等。
+yii2-rpc是一个基于swoole开发的高性能rpc包，yii2-rpc提供了注册发现，链路追踪，中间件等等功能，可以很容易集成到第三方框架，如laravel，yii等等。
 
 
 
@@ -19,7 +19,7 @@ swrpc是一个基于swoole开发的高性能rpc包，swrpc提供了注册发现�
 ## 安装
 
 ```bash
-php composer.phar require wuzhc/swprc ~1.0 -vvv
+php composer.phar require yii-diandi/yii2-rpc
 ```
 
 
@@ -32,7 +32,7 @@ php composer.phar require wuzhc/swprc ~1.0 -vvv
 
 ```php
 <?php
-use diandi\swrpc\LogicService;
+use diandi\yii2-rpc\LogicService;
 class SchoolService extends LogicService 
 {
     public function getUserSchool($userID) {
@@ -46,18 +46,18 @@ School模块将作为rpc服务端，对外提供服务，启动如下：
 
 ```php
 <?php
-namespace diandi\swrpcTests;
-use diandi\swrpc\Server;
+namespace diandi\yii2-rpcTests;
+use diandi\yii2-rpc\Server;
 
 $basePath = dirname(dirname(__FILE__));
 require_once $basePath . "/vendor/autoload.php";
 
 $options = [
     'enable_coroutine' => true,
-    'pid_file'         => __DIR__ . '/swrpc.pid',
+    'pid_file'         => __DIR__ . '/yii2-rpc.pid',
 ];
 $server = new Server('School_Module', '127.0.0.1', 9501, 1, $options);
-$server->addService(\SwrpcTests\services\SchoolService::class); 
+$server->addService(\yii2-rpcTests\services\SchoolService::class); 
 $server->start();
 ```
 
@@ -73,10 +73,10 @@ User模块作为客户端，调用School模块服务如下
 
 ```php
 <?php
-namespace diandi\swrpcTests;
-use diandi\swrpc\Request;
-use diandi\swrpc\LogicService;
-use diandi\swrpc\Client;
+namespace diandi\yii2-rpcTests;
+use diandi\yii2-rpc\Request;
+use diandi\yii2-rpc\LogicService;
+use diandi\yii2-rpc\Client;
 
 class UserService extends LogicService
 {
@@ -85,7 +85,7 @@ class UserService extends LogicService
         $userID = 123;
         $module = 'School_Module'; //请求目标模块名称，需要和服务端定义的一致
         $client = Client::create($module, '127.0.0.1', 9501);
-        return $client->send(Request::create('\SwrpcTests\services\SchoolService_getUserSchool', [$userID]));
+        return $client->send(Request::create('\yii2-rpcTests\services\SchoolService_getUserSchool', [$userID]));
     }
 }
 
@@ -93,7 +93,7 @@ class UserService extends LogicService
 echo UserService::factory()->getUserSchoolName();
 ```
 注意：
-- Request.method 为服务类命名 + 下划线 + 方法名，例如上面的`\SwrpcTests\services\SchoolService_getUserSchool`，如果服务类有命名空间，记得一定要带上命名空间
+- Request.method 为服务类命名 + 下划线 + 方法名，例如上面的`\yii2-rpcTests\services\SchoolService_getUserSchool`，如果服务类有命名空间，记得一定要带上命名空间
 
 
 
@@ -108,19 +108,19 @@ echo UserService::factory()->getUserSchoolName();
 ```php
 $options = [
     'worker_num'       => 10
-    'pid_file'         => __DIR__ . '/swrpc.pid',
+    'pid_file'         => __DIR__ . '/yii2-rpc.pid',
 ];
 $server = new Server('School_Module', '127.0.0.1', 9501, 1, $options);
 ```
 
 ### 协程模式
 
-目前swrpc协程模式是运行在单进程的
+目前yii2-rpc协程模式是运行在单进程的
 
 ```php
 $options = [
     'enable_coroutine' => true,
-    'pid_file'         => __DIR__ . '/swrpc.pid',
+    'pid_file'         => __DIR__ . '/yii2-rpc.pid',
 ];
 $server = new Server('School_Module', '127.0.0.1', 9501, 1, $options);
 ```
@@ -132,14 +132,14 @@ $server = new Server('School_Module', '127.0.0.1', 9501, 1, $options);
 在客户端发起同步调用，客户端会一直等待服务端返回结果
 
 ```php
-$client = \Swrpc\Client::create($module, '127.0.0.1', 9501);
+$client = \yii2-rpc\Client::create($module, '127.0.0.1', 9501);
 return $client->send(SyncRequest::create('SchoolService_getUserSchool', [$userID]));
 ```
 
 在客户端发起异步调用，客户端会立马得到响应结果，请求将被swoole的task进程处理
 
 ```php
-$client = \Swrpc\Client::create($module, '127.0.0.1', 9501);
+$client = \yii2-rpc\Client::create($module, '127.0.0.1', 9501);
 return $client->send(AsyncRequest::create('SchoolService_getUserSchool', [$userID]));
 ```
 
@@ -147,11 +147,11 @@ return $client->send(AsyncRequest::create('SchoolService_getUserSchool', [$userI
 
 ## 自定义中间件
 
-中间件允许程序可以对请求进行前置操作和后置操作，底层使用了责任链设计模式，所以为了执行下一个中间件，必须返回`$next($request)`，如果想提前返回，则返回结果必须是`Swrpc\Response`类型
+中间件允许程序可以对请求进行前置操作和后置操作，底层使用了责任链设计模式，所以为了执行下一个中间件，必须返回`$next($request)`，如果想提前返回，则返回结果必须是`yii2-rpc\Response`类型
 
 ```php
-//中间件除了用匿名函数定义，还可以用实现Swrpc\Middlewares\MiddlewareInterface接口的类
-$middleware = function (\Swrpc\Request $request, Closure $next) {
+//中间件除了用匿名函数定义，还可以用实现yii2-rpc\Middlewares\MiddlewareInterface接口的类
+$middleware = function (\yii2-rpc\Request $request, Closure $next) {
     $start = microtime(true); //前置操作，记录请求开始时间
     $result = $next($request);
     echo '耗时：'.(microtime(true) - $start).PHP_EOL; //后置操作，记录请求结束时间，从而计算请求耗时
@@ -162,11 +162,11 @@ $server->addService(SchoolService::class);
 $server->addMiddleware($middleware); //添加中间件
 $server->start();
 ```
-如果要提前中止中间件，可以提前在匿名函数或类方法中返回\Swrpc\Response对象，如下
+如果要提前中止中间件，可以提前在匿名函数或类方法中返回\yii2-rpc\Response对象，如下
 ```php
-$middleware = function (\Swrpc\Request $request, Closure $next) {
+$middleware = function (\yii2-rpc\Request $request, Closure $next) {
     if (empty($request->getParams())) {
-        return \Swrpc\Response::error('参数不能为空'); //提前返回，必须是Response类型
+        return \yii2-rpc\Response::error('参数不能为空'); //提前返回，必须是Response类型
     }   
     return $next($request); 
 };
@@ -190,7 +190,7 @@ $server->start();
 
 ## 注册服务发现
 
-如果服务端启动的时候有设置注册中心，则启动成功会自动向注册中心注册服务端地址。目前swrpc提供了`Consul`作为注册中心，使用如下
+如果服务端启动的时候有设置注册中心，则启动成功会自动向注册中心注册服务端地址。目前yii2-rpc提供了`Consul`作为注册中心，使用如下
 
 ```php
 $server = new Server('School_Module', '127.0.0.1', 9501, 1, $options);
@@ -199,7 +199,7 @@ $server->addService(SchoolService::class);
 $server->start();
 ```
 
-如上，使用Consul作为服务的注册中心，通过`http://127.0.0.1:8500`可以查看注册信息，如果想用etcd等其他注册中心，只要实现`Swrpc\Middlewares\RegisterInterface`接口即可，然后在通过`$server->addRegister()`添加到server
+如上，使用Consul作为服务的注册中心，通过`http://127.0.0.1:8500`可以查看注册信息，如果想用etcd等其他注册中心，只要实现`yii2-rpc\Middlewares\RegisterInterface`接口即可，然后在通过`$server->addRegister()`添加到server
 
 ![1615562878292](https://segmentfault.com/img/bVcPwbR)
 
@@ -215,11 +215,11 @@ $server->start();
 
 ```php
 $register = new Consul();
-$client = \Swrpc\Client::createBalancer('School_Module', $register, \Swrpc\Client::STRATEGY_WEIGHT);
+$client = \yii2-rpc\Client::createBalancer('School_Module', $register, \yii2-rpc\Client::STRATEGY_WEIGHT);
 $result = $client->send(Request::create('SchoolService_getUserSchool', [$userID]);
 ```
 
-目前swrpc提供两种简单策略模式，`\Swrpc\Client::STRATEGY_WEIGHT权重模式`，`\Swrpc\Client::STRATEGY_RANDOM`随机模式
+目前yii2-rpc提供两种简单策略模式，`\yii2-rpc\Client::STRATEGY_WEIGHT权重模式`，`\yii2-rpc\Client::STRATEGY_RANDOM`随机模式
 
 
 
@@ -260,11 +260,11 @@ $users = UserService::factory()
 默认使用`Monolog/Logger`作为日志处理器，日志信息会输出到控制台。可根据自己需求覆盖默认处理器，只要日志类
 实现`Psr\Log\LoggerInterface`即可
 ```php
-use diandi\swrpc\Server;
+use diandi\yii2-rpc\Server;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-$logger = new Logger('swrpc');
+$logger = new Logger('yii2-rpc');
 $logger->pushHandler(new StreamHandler(fopen('xxxx.log','w+'), Logger::DEBUG));
 
 $server = new Server('127.0.0.1', 9501, ['enable_coroutine'=>true]);
@@ -281,9 +281,9 @@ $server->start();
 默认序列化数据会使用`serialize()`，如果swoole版本在4.5以上的自动使用swoole_substr_unserialize()，可以实现的类来覆盖默认配置，只要实现`src/Packer/PackerInterface`即可，注意服务端和客户端需要使用一样的协议，否则解析不了。
 
 ```php
-use diandi\swrpc\Server;
+use diandi\yii2-rpc\Server;
 
-$packer = new \Swrpc\Packer\SerializeLengthPacker();
+$packer = new \yii2-rpc\Packer\SerializeLengthPacker();
 $server = new Server('127.0.0.1', 9501, ['enable_coroutine'=>true]);
 $server->addService(UserService::class); 
 $server->addPacker($packer); //覆盖默认值
@@ -301,7 +301,7 @@ $server->addPacker($packer); //覆盖默认值
 $options = [
     'ssl_cert_file' => __DIR__.'/config/ssl.crt',
     'ssl_key_file'  => __DIR__.'/config/ssl.key',
-    'pid_file'      => __DIR__ . '/swrpc.pid',
+    'pid_file'      => __DIR__ . '/yii2-rpc.pid',
 ];
 $server = new Server('School_Module', '127.0.0.1', 9501, $options, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);
 $server->addService(SchoolService::class); 
@@ -327,18 +327,18 @@ php phpunit.phar tests --debug
 ### phpunit 测试报告
 
 ```
-Client (SwrpcTests\Client)
+Client (yii2-rpcTests\Client)
  [x] Client connect
  [x] Client sync request
  [x] Client async request
 
-Packer (SwrpcTests\Packer)
+Packer (yii2-rpcTests\Packer)
  [x] Serialize length pack
  [x] Serialize lenght unpack
  [x] Serialize eof pack
  [x] Serialize eof unpack
 
-Server (SwrpcTests\Server)
+Server (yii2-rpcTests\Server)
  [x] Server register to consul
  [x] Server unregister from consul
  [x] Server add service
