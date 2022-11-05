@@ -2,7 +2,6 @@
 
 namespace diandi\swrpcTests\services;
 
-
 use diandi\swrpc\Exceptions\RpcException;
 use diandi\swrpc\LogicService;
 use diandi\swrpc\Register\Consul;
@@ -12,7 +11,6 @@ use diandi\swrpc\Request\SyncRequest;
  * Class ClassService
  *
  * @package SwrpcTests\services
- 2021313 9:15:21
  */
 class ClassService extends LogicService
 {

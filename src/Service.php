@@ -3,17 +3,15 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-11-04 12:10:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-11-04 12:13:43
+ * @Last Modified time: 2022-11-05 11:57:24
  */
-
 
 namespace diandi\swrpc;
 
-
+use diandi\swrpc\Request\Request;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
-use diandi\swrpc\Request\Request;
 
 /**
  * Class Service
@@ -21,17 +19,33 @@ use diandi\swrpc\Request\Request;
  */
 class Service
 {
-    private array $services = [];
-    protected array $filers
-        = [
-            'factory',
-            'initTracer',
-            'setModule',
-            'setTracerUrl',
-            'setParams',
-            'setTracerContext',
-            'getTracerContext'
-        ];
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    private $services = [];
+
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $filers = [
+        'factory',
+        'initTracer',
+        'setModule',
+        'setTracerUrl',
+        'setParams',
+        'setTracerContext',
+        'getTracerContext',
+    ];
 
     /** @var LoggerInterface $logger */
     private $logger;
@@ -47,7 +61,6 @@ class Service
      * @param $obj
      * @param $prefix
      * @return bool
-     202138 13:43:21
      */
     public function addInstance($obj, $prefix = ''): bool
     {
@@ -85,7 +98,6 @@ class Service
      *
      * @param $key
      * @return mixed|null
-     202138 13:43:17
      */
     public function getService($key)
     {
@@ -97,7 +109,6 @@ class Service
      * getServices
      *
      * @return array
-     202138 15:23:58
      */
     public function getServices(): array
     {
@@ -108,7 +119,6 @@ class Service
      * count
      *
      * @return int
-     202139 12:56:46
      */
     public function count(): int
     {
@@ -118,7 +128,6 @@ class Service
     /**
      * @param $key
      * @return bool
-     202138 14:32:50
      */
     public function isExist($key): bool
     {
@@ -131,7 +140,6 @@ class Service
      * @param Request $request
      * @return Response
      * @throws \ReflectionException
-     202139 10:17:59
      */
     public function call(Request $request): Response
     {
@@ -167,7 +175,7 @@ class Service
         }
 
         return Response::success([
-            'result' => $result
+            'result' => $result,
         ]);
     }
 }

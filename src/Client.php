@@ -3,20 +3,18 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-11-04 12:10:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-11-04 12:13:25
+ * @Last Modified time: 2022-11-05 12:00:00
  */
-
 
 namespace diandi\swrpc;
 
-
-use Swoole\Client as SwClient;
 use diandi\swrpc\Exceptions\RpcException;
 use diandi\swrpc\Packer\PackerInterface;
 use diandi\swrpc\Packer\SerializeLengthPacker;
 use diandi\swrpc\Register\RegisterInterface;
 use diandi\swrpc\Register\Service;
 use diandi\swrpc\Request\Request;
+use Swoole\Client as SwClient;
 
 /**
  * Class Client
@@ -24,29 +22,88 @@ use diandi\swrpc\Request\Request;
  */
 class Client
 {
+    /**
+     * Undocumented variable
+     * @var int|string|array|object
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
     protected $services = [];
     protected $connects = [];
-
 
     const STRATEGY_RANDOM = 1;
     const STRATEGY_WEIGHT = 2;
 
     protected $mode;
     protected $timeout = 3;
-    protected array $options;
-    protected string $module;
-    protected int $strategy;
-    protected ?RegisterInterface $register = null;
-    protected ?PackerInterface $packer = null;
 
-    protected array $defaultOptions
-        = [
-            'open_length_check'     => true,
-            'package_length_type'   => 'N',
-            'package_length_offset' => 0, //第N个字节是包长度的值
-            'package_body_offset'   => 4, //第几个字节开始计算长度
-            'package_max_length'    => 81920, //协议最大长度
-        ];
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $options;
+
+    /**
+     * Undocumented variable
+     * @var string
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $module;
+
+    /**
+     * Undocumented variable
+     * @var int
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $strategy;
+
+    /**
+     * Undocumented variable
+     * @var RegisterInterface|null
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $register = null;
+
+    /**
+     * Undocumented variable
+     * @var PackerInterface|null
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $packer = null;
+
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $defaultOptions = [
+        'open_length_check' => true,
+        'package_length_type' => 'N',
+        'package_length_offset' => 0, //第N个字节是包长度的值
+        'package_body_offset' => 4, //第几个字节开始计算长度
+        'package_max_length' => 81920, //协议最大长度
+    ];
 
     /**
      * Client constructor.
@@ -77,7 +134,6 @@ class Client
      * @param int    $mode
      * @param array  $options
      * @return Client
-     2021313 18:31:17
      */
     public static function create(
         string $module,
@@ -99,7 +155,6 @@ class Client
      * @param int               $timeout
      * @param array             $options
      * @return Client
-     2021313 18:31:22
      */
     public static function createBalancer(
         string $module,
@@ -118,7 +173,6 @@ class Client
     /**
      * @param RegisterInterface $register
      * @return $this
-     2021313 18:27:20
      */
     public function addRegister(RegisterInterface $register): Client
     {
@@ -130,7 +184,6 @@ class Client
     /**
      * @param PackerInterface $packer
      * @return $this
-     2021313 18:27:24
      */
     public function addPacker(PackerInterface $packer): Client
     {
@@ -141,7 +194,6 @@ class Client
     /**
      * @return SwClient
      * @throws RpcException
-     2021313 18:23:37
      */
     public function connect(): SwClient
     {
@@ -176,7 +228,7 @@ class Client
      * @param Request $request
      * @return mixed
      * @throws RpcException
-     202139 13:35:25
+    202139 13:35:25
      */
     public function send(Request $request)
     {
@@ -207,15 +259,15 @@ class Client
 
     /**
      * @return string
-     2021313 18:20:38
      */
     public function getConnectKey(): string
     {
         /** @var Service $service */
         if ($this->strategy == self::STRATEGY_RANDOM) {
-            $service = array_rand($this->services);
+            // $service = array_rand($this->services);
             return $service->getHost() . '_' . $service->getPort();
         } else {
+            $totalWeight = 0;
             /** @var Service $service */
             foreach ($this->services as $service) {
                 $totalWeight += $service->getWeight();
@@ -240,7 +292,7 @@ class Client
      * 关闭客户端连接
      *
      * @return mixed
-     2021310 9:16:46
+    2021310 9:16:46
      */
     public function close()
     {
@@ -253,7 +305,7 @@ class Client
      * 刷新节点服务信息
      * 客户端使用长连接的情况下，需要起一个定时器来定时更新节点服务信息
      *
-     2021313 18:24:23
+    2021313 18:24:23
      */
     public function refreshServices()
     {

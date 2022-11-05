@@ -2,7 +2,6 @@
 
 namespace diandi\swrpcTests\services;
 
-
 use diandi\swrpc\Exceptions\RpcException;
 use diandi\swrpc\LogicService;
 use diandi\swrpc\Register\Consul;
@@ -12,13 +11,11 @@ use diandi\swrpc\Request\SyncRequest;
  * Class UserService
  *
  * @package SwrpcTests\services
- 2021313 9:15:52
  */
 class UserService extends LogicService
 {
     /**
      * @return UserService
-     2021311 11:32:35
      */
     public static function factory()
     {

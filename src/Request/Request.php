@@ -3,28 +3,79 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-11-04 12:10:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-11-04 12:13:04
+ * @Last Modified time: 2022-11-05 11:53:05
  */
 
-
 namespace diandi\swrpc\Request;
-
 
 use diandi\swrpc\Tracer\TracerContext;
 
 abstract class Request
 {
-    protected string $module;
-    protected string $method;
-    protected array $params;
-    protected bool $isSync = true; //是否同步请求，默认是
-    protected bool $isSystem = false; //是否系统请求，默认否
+    /**
+     * Undocumented variable
+     * @var string
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $module;
+
+    /**
+     * Undocumented variable
+     * @var string
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $method;
+
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $params;
+
+    /**
+     * Undocumented variable
+     * @var bool
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $isSync = true; //是否同步请求，默认是
+
+    /**
+     * Undocumented variable
+     * @var bool
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $isSystem = false; //是否系统请求，默认否
     protected $error;
-    protected ?TracerContext $traceContext;
+
+    /**
+     * Undocumented variable
+     * @var TracerContext|null
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $traceContext;
 
     public static function create($method, $params, ?TracerContext $traceContext = null)
     {
-        return new static ($method, $params, $traceContext);
+        return new static($method, $params, $traceContext);
     }
 
     public function __construct($method, $params, ?TracerContext $traceContext = null)

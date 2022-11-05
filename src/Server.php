@@ -3,22 +3,20 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-11-04 12:10:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-11-04 12:13:54
+ * @Last Modified time: 2022-11-05 11:56:45
  */
-
 
 namespace diandi\swrpc;
 
-
+use diandi\swrpc\Middlewares\MiddlewareInterface;
+use diandi\swrpc\Middlewares\TraceMiddleware;
+use diandi\swrpc\Packer\PackerInterface;
+use diandi\swrpc\Packer\SerializeLengthPacker;
+use diandi\swrpc\Register\RegisterInterface;
+use diandi\swrpc\Request\Request;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use diandi\swrpc\Middlewares\TraceMiddleware;
-use diandi\swrpc\Packer\SerializeLengthPacker;
-use diandi\swrpc\Register\RegisterInterface;
-use diandi\swrpc\Middlewares\MiddlewareInterface;
-use diandi\swrpc\Packer\PackerInterface;
-use diandi\swrpc\Request\Request;
 
 /**
  * Class Server
@@ -28,19 +26,71 @@ class Server
 {
     use Event;
 
-    protected string $module;
-    protected string $host;
-    protected int $port;
-    protected int $weight = 1;
-    protected array $options;
-    protected array $defaultOptions
-        = [
-            'open_length_check'     => true,
-            'package_length_type'   => 'N',
-            'package_length_offset' => 0, //第N个字节是包长度的值
-            'package_body_offset'   => 4, //第几个字节开始计算长度
-            'package_max_length'    => 81920, //协议最大长度
-        ];
+    /**
+     * Undocumented variable
+     * @var string
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $module;
+
+    /**
+     * Undocumented variable
+     * @var string
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $host;
+
+    /**
+     * Undocumented variable
+     * @var int
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $port;
+
+    /**
+     * Undocumented variable
+     * @var int
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $weight = 1;
+
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $options;
+
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $defaultOptions = [
+        'open_length_check' => true,
+        'package_length_type' => 'N',
+        'package_length_offset' => 0, //第N个字节是包长度的值
+        'package_body_offset' => 4, //第几个字节开始计算长度
+        'package_max_length' => 81920, //协议最大长度
+    ];
 
     /** @var PackerInterface $packer */
     protected $packer;
@@ -55,9 +105,17 @@ class Server
     protected $register;
 
     /** @var \Swoole\Server $server */
-    protected \Swoole\Server $server;
+    protected $server;
 
-    private array $middlewares;
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    private $middlewares;
 
     public function __construct(
         string $module,
@@ -96,7 +154,6 @@ class Server
      *
      * @param int $weight
      * @return Server
-     2021313 10:55:39
      */
     public function weight(int $weight): Server
     {
@@ -108,7 +165,6 @@ class Server
      * 设置默认选项
      *
      * @param $options
-     2021311 10:35:3
      */
     protected function setDefaultOptions($options)
     {
@@ -148,7 +204,6 @@ class Server
      * 设置默认日志处理器
      *
      * @param LoggerInterface|null $logger
-     2021311 10:34:19
      */
     protected function setDefaultLogger(LoggerInterface $logger = null)
     {
@@ -162,7 +217,6 @@ class Server
     /**
      * 设置核心中间件
      *
-     2021311 10:34:5
      */
     protected function setCoreMiddleware()
     {
@@ -174,7 +228,6 @@ class Server
      * addMiddleware
      *
      * @param mixed ...$middlewares
-     202139 11:35:11
      */
     public function addMiddleware(...$middlewares)
     {
@@ -197,7 +250,6 @@ class Server
      * @param        $service
      * @param string $prefix
      * @return Server
-     202139 11:35:2
      */
     public function addService($service, $prefix = ''): Server
     {
@@ -208,7 +260,6 @@ class Server
     /**
      * @param $key
      * @return mixed|null
-     2021312 16:11:12
      */
     public function getService($key)
     {
@@ -220,7 +271,6 @@ class Server
      *
      * @param $register
      * @return Server
-     202139 16:38:51
      */
     public function addRegister($register): Server
     {
@@ -232,7 +282,6 @@ class Server
      * 添加日志处理器
      *
      * @param $logger
-     202139 12:20:57
      */
     public function addLogger($logger)
     {
@@ -243,7 +292,6 @@ class Server
      * 添加包解析器
      *
      * @param $packer
-     202139 12:45:53
      */
     public function addPacker($packer)
     {
@@ -255,7 +303,6 @@ class Server
      * onWorkerStart 和 onStart 回调是在不同进程中并行执行的，不存在先后顺序
      *
      * @param \Swoole\Server $server
-     202139 23:11:10
      */
     public function onStart(\Swoole\Server $server)
     {
@@ -271,7 +318,6 @@ class Server
      * 需要使用 kill -15 来发送 SIGTERM 信号到主进程才能按照正常的流程终止
      *
      * @param \Swoole\Server $server
-     202139 23:14:40
      */
     public function onShutdown(\Swoole\Server $server)
     {
@@ -289,7 +335,6 @@ class Server
      * @param                $reactor_id
      * @param                $data
      * @return mixed
-     202139 11:34:0
      */
     public function onReceive(\Swoole\Server $server, $fd, $reactor_id, $data)
     {
@@ -313,7 +358,6 @@ class Server
      *
      * @param Request $request
      * @return Response
-     2021313 9:37:20
      */
     public function doRequest(Request $request): Response
     {
@@ -338,7 +382,6 @@ class Server
      *
      * @param Request $request
      * @return Response
-     2021323 10:46:55
      */
     public function doSystemRequest(Request $request): Response
     {
@@ -352,7 +395,6 @@ class Server
     /**
      * @return mixed
      * @throws \ReflectionException
-     2021312 16:36:52
      */
     public function getRequestHandler()
     {
@@ -379,7 +421,6 @@ class Server
      * @param $reactorID
      * @param $data
      * @return Response
-     2021313 9:40:37
      */
     public function OnTask($server, $taskID, $reactorID, $data): Response
     {
@@ -393,7 +434,6 @@ class Server
      * @param $server
      * @param $taskID
      * @param $data
-     2021313 9:49:44
      */
     public function OnFinish($server, $taskID, $data)
     {
@@ -405,7 +445,6 @@ class Server
      *
      * @param $server
      * @param $fd
-     202139 11:34:48
      */
     public function OnClose($server, $fd)
     {
@@ -417,7 +456,6 @@ class Server
      *
      * @param $server
      * @param $fd
-     202139 11:34:52
      */
     public function OnConnect($server, $fd)
     {
@@ -427,7 +465,6 @@ class Server
     /**
      * start
      *
-     202139 11:34:56
      */
     public function start(): bool
     {

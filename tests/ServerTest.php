@@ -2,14 +2,13 @@
 
 namespace diandi\swrpcTests;
 
-
-use Monolog\Logger;
+use diandi\swrpcTests\services\UserService;
 use diandi\swrpc\Register\Consul;
 use diandi\swrpc\Register\Service;
 use diandi\swrpc\Request\Request;
 use diandi\swrpc\Request\SyncRequest;
 use diandi\swrpc\Server;
-use diandi\swrpcTests\services\UserService;
+use Monolog\Logger;
 
 /**
  * Class ServerTest
@@ -20,7 +19,12 @@ use diandi\swrpcTests\services\UserService;
 class ServerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     2021312 17:8:31
+     * Undocumented function
+     * @return void
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
      */
     public function testServerRegisterToConsul()
     {
@@ -47,7 +51,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testServerRegisterToConsul
      * @param Consul $consul
-     2021312 17:12:17
      */
     public function testServerUnregisterFromConsul($consul)
     {
@@ -66,7 +69,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @return Server
-     2021312 17:8:17
      */
     public function testServerAddService()
     {
@@ -82,7 +84,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testServerAddService
      * @param $server
-     2021312 16:40:0
      */
     public function testServerAddMiddleware($server)
     {

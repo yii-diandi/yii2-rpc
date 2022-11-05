@@ -3,12 +3,10 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-11-04 12:10:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-11-04 12:12:13
+ * @Last Modified time: 2022-11-05 11:51:10
  */
 
-
 namespace diandi\swrpc\Packer;
-
 
 use diandi\swrpc\Request\Request;
 
@@ -16,7 +14,6 @@ use diandi\swrpc\Request\Request;
  * Class SerializeEofPacker
  *
  * @package Swrpc\Packer
- 202139 11:37:17
  */
 class SerializeEofPacker implements PackerInterface
 {

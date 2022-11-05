@@ -2,9 +2,8 @@
 
 namespace diandi\swrpcTests;
 
-
-use PHPUnit\Framework\TestCase;
 use diandi\swrpc\Request\SyncRequest;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class PackerTest
@@ -17,7 +16,6 @@ class PackerTest extends TestCase
     /**
      * 注意：Request类属性和方法发生变化时，这个测试案例就没有意义了
      * @return string
-     2021312 14:57:32
      */
     public function testSerializeLengthPack()
     {
@@ -29,7 +27,6 @@ class PackerTest extends TestCase
 
     /**
      * @depends testSerializeLengthPack
-     2021312 14:57:23
      */
     public function testSerializeLenghtUnpack($value)
     {
@@ -42,7 +39,6 @@ class PackerTest extends TestCase
     /**
      * 注意：Request类属性和方法发生变化时，这个测试案例就没有意义了
      * @return string
-     2021312 14:57:32
      */
     public function testSerializeEofPack()
     {
@@ -54,7 +50,6 @@ class PackerTest extends TestCase
 
     /**
      * @depends testSerializeEofPack
-     2021312 14:57:23
      */
     public function testSerializeEofUnpack($value)
     {

@@ -3,12 +3,10 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-11-04 12:10:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-11-04 12:12:57
+ * @Last Modified time: 2022-11-05 11:49:15
  */
 
-
 namespace diandi\swrpc\Register;
-
 
 /**
  * 注册中心服务
@@ -43,6 +41,14 @@ class Service
         return $this->port;
     }
 
+    /**
+     * Undocumented function
+     * @return int
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
     public function getWeight()
     {
         return $this->weight;
@@ -51,9 +57,9 @@ class Service
     public function toArray(): array
     {
         return [
-            'host'   => $this->host,
-            'port'   => $this->port,
-            'weight' => $this->weight
+            'host' => $this->host,
+            'port' => $this->port,
+            'weight' => $this->weight,
         ];
     }
 }

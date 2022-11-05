@@ -2,11 +2,8 @@
 
 namespace diandi\swrpcTests;
 
-
-use diandi\swrpc\Register\Consul;
-use diandi\swrpc\Register\Service;
-use diandi\swrpc\Request;
 use diandi\swrpc\Client;
+use diandi\swrpc\Request;
 
 /**
  * 客户端单元测试
@@ -19,7 +16,6 @@ class ClientTest extends BootTest
 {
     /**
      * @return Client Client
-     2021312 14:29:28
      */
     public function testClientConnect(): Client
     {
@@ -32,7 +28,6 @@ class ClientTest extends BootTest
     /**
      * @depends testClientConnect
      * @param Client $client
-     2021312 14:29:20
      */
     public function testClientSyncRequest($client)
     {
@@ -44,7 +39,6 @@ class ClientTest extends BootTest
     /**
      * @depends testClientConnect
      * @param $client
-     2021313 10:3:43
      */
     public function testClientAsyncRequest($client)
     {

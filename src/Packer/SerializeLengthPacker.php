@@ -6,9 +6,7 @@
  * @Last Modified time: 2022-11-04 12:12:13
  */
 
-
 namespace diandi\swrpc\Packer;
-
 
 use diandi\swrpc\Request\Request;
 
@@ -16,7 +14,6 @@ use diandi\swrpc\Request\Request;
  * Class SerializeLengthPacker
  *
  * @package Swrpc\Packer
- 202139 11:37:27
  */
 class SerializeLengthPacker implements PackerInterface
 {
@@ -31,10 +28,10 @@ class SerializeLengthPacker implements PackerInterface
     protected $length;
 
     protected $defaultOptions
-        = [
-            'package_length_type' => 'N',
-            'package_body_offset' => 4,
-        ];
+    = [
+        'package_length_type' => 'N',
+        'package_body_offset' => 4,
+    ];
 
     public function __construct(array $options = [])
     {

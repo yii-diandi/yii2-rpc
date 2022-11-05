@@ -3,37 +3,50 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-11-04 12:10:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-11-04 12:12:16
+ * @Last Modified time: 2022-11-05 11:51:45
  */
-
 
 namespace diandi\swrpc\Register;
 
-
+use diandi\swrpc\Exceptions\RpcException;
 use SensioLabs\Consul\ServiceFactory;
 use SensioLabs\Consul\Services\Agent;
 use SensioLabs\Consul\Services\AgentInterface as AgentInterfaceAlias;
-use SensioLabs\Consul\Services\Catalog;
-use SensioLabs\Consul\Services\CatalogInterface;
 use SensioLabs\Consul\Services\Health;
-use diandi\swrpc\Exceptions\RpcException;
 
 class Consul implements RegisterInterface
 {
     protected $sf;
-    protected array $options;
-    protected array $serviceCache
-        = [
-            'ttl'            => 10,
-            'services'       => [],
-            'lastUpdateTime' => 0,
-        ];
+
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $options;
+
+    /**
+     * Undocumented variable
+     * @var array
+     * @date 2022-11-05
+     * @example
+     * @author Wang Chunsheng
+     * @since
+     */
+    protected $serviceCache = [
+        'ttl' => 10,
+        'services' => [],
+        'lastUpdateTime' => 0,
+    ];
 
     public function __construct($uri = 'http://127.0.0.1:8500', $options = [])
     {
         $this->options = $options;
         $this->sf = new ServiceFactory([
-            'base_uri' => $uri
+            'base_uri' => $uri,
         ]);
     }
 
@@ -49,7 +62,6 @@ class Consul implements RegisterInterface
      * @param string $host
      * @param        $port
      * @param int    $weight
-     202139 23:17:5
      */
     public function register($module, $host, $port, $weight = 1)
     {
@@ -57,21 +69,21 @@ class Consul implements RegisterInterface
         /** @var Agent $agent */
         $agent = $this->sf->get(AgentInterfaceAlias::class);
         $agent->registerService([
-            'ID'      => $id,
-            'Name'    => $module,
-            'Port'    => $port,
+            'ID' => $id,
+            'Name' => $module,
+            'Port' => $port,
             'Address' => $host,
-            'Tags'    => [
+            'Tags' => [
                 'port_' . $port,
             ],
             'Weights' => [
                 'Passing' => $weight,
                 'Warning' => 1,
             ],
-            'Check'   => [
-                'TCP'                            => $host . ':' . $port,
-                'Interval'                       => $this->options['interval'] ?? '10s',
-                'Timeout'                        => $this->options['timeout'] ?? '5s',
+            'Check' => [
+                'TCP' => $host . ':' . $port,
+                'Interval' => $this->options['interval'] ?? '10s',
+                'Timeout' => $this->options['timeout'] ?? '5s',
                 'DeregisterCriticalServiceAfter' => $this->options['deregisterCriticalServiceAfter'] ?? '30s',
             ],
         ]);
@@ -83,7 +95,6 @@ class Consul implements RegisterInterface
      *
      * @param $host
      * @param $port
-     202139 23:16:51
      */
     public function unRegister($host, $port)
     {
@@ -98,7 +109,6 @@ class Consul implements RegisterInterface
      *
      * @param string $module
      * @return array
-     2021310 9:44:16
      */
     public function getServices(string $module): array
     {
@@ -128,7 +138,6 @@ class Consul implements RegisterInterface
      *
      * @param string $module
      * @return Service
-     2021310 9:44:27
      */
     public function getRandomService(string $module): Service
     {
@@ -145,7 +154,6 @@ class Consul implements RegisterInterface
      *
      * @param string $module
      * @return Service
-     2021310 9:44:38
      */
     public function getWeightService(string $module): Service
     {
