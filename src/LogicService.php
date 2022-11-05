@@ -3,12 +3,10 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-11-04 12:10:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-11-04 12:13:59
+ * @Last Modified time: 2022-11-05 12:09:06
  */
 
-
 namespace diandi\swrpc;
-
 
 use diandi\swrpc\Tracer\TracerContext;
 use Zipkin\Endpoint;
@@ -30,7 +28,6 @@ class LogicService
 
     /**
      * @return static
-     2021311 11:4:5
      */
     public static function factory()
     {
@@ -41,7 +38,6 @@ class LogicService
      * 初始化链路追踪器
      *
      * @param $func
-     2021311 11:3:36
      */
     public function initTracer($func)
     {
@@ -74,7 +70,6 @@ class LogicService
     /**
      * @param $context
      * @return $this
-     2021311 11:18:43
      */
     public function setTracerContext($context)
     {
@@ -85,7 +80,6 @@ class LogicService
     /**
      * @param $func
      * @return null
-     2021311 11:4:1
      */
     public function getTracerContext($func)
     {
@@ -101,7 +95,6 @@ class LogicService
     /**
      * @param array $params
      * @return $this
-     2021311 11:15:47
      */
     public function setParams(array $params)
     {
@@ -112,7 +105,6 @@ class LogicService
     /**
      * @param string $url
      * @return static $this
-     2021311 11:15:35
      */
     public function setTracerUrl(string $url)
     {
@@ -123,7 +115,6 @@ class LogicService
     /**
      * @param string $name
      * @return $this
-     2021311 11:59:4
      */
     public function setModule(string $name)
     {
